@@ -13,8 +13,8 @@ export function SiteHeader() {
       </div>
       <nav aria-label="Primary navigation">
         <a href="/#quick-start">Quick start</a>
-        <a href="/#behavior">Behavior</a>
-        <a href="/#api">API</a>
+        <a href="/#gesture-lab">Gesture Lab</a>
+        <a href="/#browser-behavior">Browsers</a>
         <a href="https://github.com/NIPE-Solutions/react-pull-to-refresh">
           GitHub
         </a>
@@ -32,6 +32,12 @@ export function SiteFooter() {
         </a>
       </p>
       <nav aria-label="Legal">
+        <a href="https://github.com/NIPE-Solutions/react-pull-to-refresh/blob/main/CHANGELOG.md">
+          Changelog
+        </a>
+        <a href="https://github.com/NIPE-Solutions/react-pull-to-refresh/security/policy">
+          Security
+        </a>
         <a href="/imprint/">Imprint</a>
         <a href="/privacy/">Privacy</a>
         <a href="https://github.com/NIPE-Solutions/react-pull-to-refresh/blob/main/LICENSE">
