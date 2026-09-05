@@ -39,15 +39,22 @@ element explicitly:
 ```tsx
 <Sheet.Content>
   <Sheet.Handle />
-  <div ref={scrollRef} className="sheet-scroll">
-    <PullToRefresh.Root onRefresh={refresh} scrollContainer={scrollRef}>
-      <PullToRefresh.Content>{/* feed */}</PullToRefresh.Content>
-    </PullToRefresh.Root>
-  </div>
+  <PullToRefresh.Root
+    ref={scrollRef}
+    className="sheet-scroll"
+    onRefresh={refresh}
+    scrollContainer={scrollRef}
+  >
+    <PullToRefresh.Content>{/* feed */}</PullToRefresh.Content>
+  </PullToRefresh.Root>
 </Sheet.Content>
 ```
 
+Make the root itself scrollable. Do not place a default PTR root—with its
+mechanical overflow containment—inside a second element that is expected to
+receive chained scrolling.
+
 The documentation proof uses the published v5 package. Desktop automation
-verifies that the sheet opens, exposes a dedicated scroll root, and closes.
+verifies that the sheet opens, scrolls the dedicated root, and closes.
 Combined drag feel on iOS and Android remains manual pending; the alpha does not
 claim physical-device verification.

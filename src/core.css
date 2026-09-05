@@ -10,7 +10,7 @@
 }
 
 .ptr-root[data-at-top='true'] {
-  touch-action: pan-x pan-down;
+  touch-action: pan-x pan-up;
 }
 
 .ptr-indicator {
