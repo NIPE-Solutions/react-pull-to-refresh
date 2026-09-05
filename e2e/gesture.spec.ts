@@ -123,6 +123,37 @@ test('sheet content keeps the native scroll direction available at its top bound
     .toBeGreaterThan(0)
 })
 
+test('sheet feed owns a gradual downward pull before the sheet can claim it', async ({
+  page,
+}) => {
+  await page.goto('/#integrations')
+  await page.getByRole('button', { name: 'Open bottom sheet proof' }).click()
+
+  const sheet = page.getByRole('dialog')
+  await expect(sheet).toHaveAttribute('data-rsbs-state', 'open')
+  const initialPosition = await sheet.evaluate((node) =>
+    node.style.getPropertyValue('--rsbs-position'),
+  )
+  const root = page.getByTestId('sheet-ptr')
+  const box = await root.boundingBox()
+  if (!box) throw new Error('Sheet PTR root has no box')
+  const x = box.x + box.width / 2
+  const y = box.y + 80
+
+  await page.mouse.move(x, y)
+  await page.mouse.down()
+  await page.mouse.move(x, y + 2)
+  await page.mouse.move(x, y + 30, { steps: 6 })
+
+  await expect(root).toHaveAttribute('data-state', 'pulling')
+  await expect
+    .poll(() =>
+      sheet.evaluate((node) => node.style.getPropertyValue('--rsbs-position')),
+    )
+    .toBe(initialPosition)
+  await page.mouse.up()
+})
+
 test('Swipe Actions owns a horizontal row trace', async ({ page }) => {
   await page.goto('/#integrations')
   const row = page.locator('.swipe-actions-root').first()

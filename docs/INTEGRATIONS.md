@@ -43,6 +43,7 @@ element explicitly:
     ref={scrollRef}
     className="sheet-scroll"
     onRefresh={refresh}
+    onPointerDown={(event) => event.stopPropagation()}
     scrollContainer={scrollRef}
   >
     <PullToRefresh.Content>{/* feed */}</PullToRefresh.Content>
@@ -53,6 +54,11 @@ element explicitly:
 Make the root itself scrollable. Do not place a default PTR root—with its
 mechanical overflow containment—inside a second element that is expected to
 receive chained scrolling.
+
+Stop pointer-down propagation from the feed when the sheet handle is the only
+surface that should drag the sheet. This leaves the browser default untouched,
+so ordinary list scrolling still works, while preventing the sheet and PTR
+from racing to capture the same downward gesture at the top boundary.
 
 The documentation proof uses the published v5 package. Desktop automation
 verifies that the sheet opens, scrolls the dedicated root, and closes.
