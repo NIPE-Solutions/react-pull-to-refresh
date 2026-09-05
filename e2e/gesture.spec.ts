@@ -13,6 +13,53 @@ test('page is accessible and has no horizontal overflow', async ({ page }) => {
   expect(sizes.scroll).toBe(sizes.client)
 })
 
+test('header identifies the primitive family without a hero eyebrow', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const header = page.getByRole('banner')
+  await expect(header.getByText('Primitives', { exact: true })).toBeVisible()
+  await expect(
+    header.getByRole('link', { name: 'NIPE Open Source' }),
+  ).toHaveAttribute('href', 'https://opensource.nipesolutions.com')
+  await expect(page.locator('.hero .family')).toHaveCount(0)
+})
+
+test('footer links to the website legal pages', async ({ page }) => {
+  await page.goto('/')
+
+  const legal = page.getByRole('navigation', { name: 'Legal' })
+  await expect(legal.getByRole('link', { name: 'Imprint' })).toHaveAttribute(
+    'href',
+    '/imprint/',
+  )
+  await expect(legal.getByRole('link', { name: 'Privacy' })).toHaveAttribute(
+    'href',
+    '/privacy/',
+  )
+})
+
+test('imprint publishes verified NIPE legal information', async ({ page }) => {
+  await page.goto('/imprint/')
+
+  await expect(page).toHaveTitle(/Imprint/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Imprint')
+  await expect(page.getByText('NIPE Solutions e.U.')).toBeVisible()
+  await expect(page.getByText('FN 585066t')).toBeVisible()
+  await expect(page.getByText('ATU78464412')).toBeVisible()
+})
+
+test('privacy page documents the website data practices', async ({ page }) => {
+  await page.goto('/privacy/')
+
+  await expect(page).toHaveTitle(/Privacy/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy')
+  await expect(page.getByText('Vercel Inc.')).toBeVisible()
+  await expect(page.getByText(/does not use analytics/i)).toBeVisible()
+  await expect(page.getByText(/served locally/i)).toBeVisible()
+})
+
 test('an armed mouse trace refreshes exactly once', async ({ page }) => {
   await page.goto('/')
   const root = page.getByTestId('main-demo')

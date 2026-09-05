@@ -6,6 +6,8 @@ import './site.css'
 import { StrictMode, useCallback, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { PullToRefresh } from '@nipe-solutions/react-pull-to-refresh'
+import { LegalPage } from './legal-page'
+import { SiteFooter, SiteHeader } from './site-chrome'
 
 const initialMessages = [
   {
@@ -134,33 +136,11 @@ function Demo() {
 function App() {
   return (
     <>
-      <header className="site-header">
-        <a
-          className="brand"
-          href="#top"
-          aria-label="React Pull to Refresh home"
-        >
-          <span className="brand-mark" aria-hidden="true">
-            ↓
-          </span>
-          React Pull to Refresh
-        </a>
-        <nav aria-label="Primary navigation">
-          <a href="#quick-start">Quick start</a>
-          <a href="#behavior">Behavior</a>
-          <a href="#api">API</a>
-          <a href="https://github.com/NIPE-Solutions/react-pull-to-refresh">
-            GitHub
-          </a>
-        </nav>
-      </header>
+      <SiteHeader />
 
       <main id="top">
         <section className="hero">
           <div className="hero-copy">
-            <p className="family">
-              <span /> Part of NIPE Open Source
-            </p>
             <h1>Pull to refresh for React, without owning your data.</h1>
             <p className="lede">
               A focused primitive for scroll arbitration, progressive
@@ -331,20 +311,7 @@ function App() {
         </section>
       </main>
 
-      <footer>
-        <p>
-          <a href="https://opensource.nipesolutions.com">
-            Part of NIPE Open Source
-          </a>
-        </p>
-        <nav aria-label="Legal">
-          <a href="https://opensource.nipesolutions.com/impressum">Imprint</a>
-          <a href="https://opensource.nipesolutions.com/privacy">Privacy</a>
-          <a href="https://github.com/NIPE-Solutions/react-pull-to-refresh/blob/main/LICENSE">
-            MIT License
-          </a>
-        </nav>
-      </footer>
+      <SiteFooter />
     </>
   )
 }
@@ -352,8 +319,14 @@ function App() {
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Missing #root element')
 
-createRoot(rootElement).render(
-  <StrictMode>
+const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
+const page =
+  pathname === '/imprint' ? (
+    <LegalPage kind="imprint" />
+  ) : pathname === '/privacy' ? (
+    <LegalPage kind="privacy" />
+  ) : (
     <App />
-  </StrictMode>,
-)
+  )
+
+createRoot(rootElement).render(<StrictMode>{page}</StrictMode>)
