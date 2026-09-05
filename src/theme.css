@@ -1,0 +1,23 @@
+.ptr-indicator {
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: 0.5rem;
+  border-radius: 999px;
+  color: currentColor;
+}
+
+.ptr-root[data-state='refreshing'] .ptr-indicator {
+  animation: ptr-theme-spin 800ms linear infinite;
+}
+
+@keyframes ptr-theme-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ptr-root[data-state='refreshing'] .ptr-indicator {
+    animation-duration: 1600ms;
+  }
+}

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://react-pull-to-refresh.nipesolutions.com/sitemap.xml
+
