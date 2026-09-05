@@ -12,6 +12,8 @@ All notable changes follow Keep a Changelog.
   published-package integration proofs to the documentation site.
 - Preserved the upward touch-pan direction at the top boundary so scrollable
   content can begin scrolling normally from its first row.
+- Documented explicit pointer ownership for Pull to Refresh inside a draggable
+  bottom sheet.
 
 ## [0.1.0-alpha.0] - 2026-09-05
 

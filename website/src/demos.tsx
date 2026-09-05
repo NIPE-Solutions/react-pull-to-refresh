@@ -374,6 +374,7 @@ export function BottomSheetProof() {
               className="sheet-scroll"
               data-testid="sheet-ptr"
               scrollContainer={scrollRef}
+              onPointerDown={(event) => event.stopPropagation()}
               onRefresh={() =>
                 new Promise((resolve) => window.setTimeout(resolve, 400))
               }
