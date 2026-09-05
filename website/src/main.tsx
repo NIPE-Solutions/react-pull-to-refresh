@@ -183,7 +183,12 @@ function IntegrationProofs() {
       </div>
       <div className="integration-grid">
         <div>
-          <h3>Swipe Actions inside a feed</h3>
+          <h3>
+            <a href="https://react-swipe-actions.nipesolutions.com/">
+              React Swipe Actions
+            </a>{' '}
+            inside a feed
+          </h3>
           <p>
             Horizontal motion reveals a row. Vertical motion stays with
             scrolling. A downward pull at the top belongs to refresh.
@@ -191,7 +196,12 @@ function IntegrationProofs() {
           <SwipeIntegration />
         </div>
         <div>
-          <h3>Pull to Refresh inside a sheet</h3>
+          <h3>
+            Pull to Refresh inside{' '}
+            <a href="https://react-spring-bottom-sheet.nipesolutions.com/">
+              React Spring Bottom Sheet
+            </a>
+          </h3>
           <p>
             The sheet handle remains outside the scrolling feed. The feed
             element is passed explicitly as the pull boundary.

@@ -369,26 +369,26 @@ export function BottomSheetProof() {
               </div>
               <Sheet.Close>Close sheet proof</Sheet.Close>
             </div>
-            <div className="sheet-scroll" ref={scrollRef}>
-              <PullToRefresh.Root
-                data-testid="sheet-ptr"
-                scrollContainer={scrollRef}
-                onRefresh={() =>
-                  new Promise((resolve) => window.setTimeout(resolve, 400))
-                }
-              >
-                <PullToRefresh.Indicator>
-                  <TensionIndicator />
-                </PullToRefresh.Indicator>
-                <PullToRefresh.Content>
-                  {Array.from({ length: 8 }, (_, index) => (
-                    <div className="sheet-row" key={index}>
-                      Sheet content {index + 1}
-                    </div>
-                  ))}
-                </PullToRefresh.Content>
-              </PullToRefresh.Root>
-            </div>
+            <PullToRefresh.Root
+              ref={scrollRef}
+              className="sheet-scroll"
+              data-testid="sheet-ptr"
+              scrollContainer={scrollRef}
+              onRefresh={() =>
+                new Promise((resolve) => window.setTimeout(resolve, 400))
+              }
+            >
+              <PullToRefresh.Indicator>
+                <TensionIndicator />
+              </PullToRefresh.Indicator>
+              <PullToRefresh.Content>
+                {Array.from({ length: 8 }, (_, index) => (
+                  <div className="sheet-row" key={index}>
+                    Sheet content {index + 1}
+                  </div>
+                ))}
+              </PullToRefresh.Content>
+            </PullToRefresh.Root>
           </Sheet.Content>
         </Sheet.Viewport>
       </Sheet.Portal>

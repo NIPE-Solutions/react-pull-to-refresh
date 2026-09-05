@@ -77,6 +77,16 @@ test('documents ownership, native refresh, and truthful device status', async ({
 test('renders real sibling primitive integration proofs', async ({ page }) => {
   await page.goto('/#integrations')
 
+  await expect(
+    page.getByRole('link', { name: 'React Swipe Actions' }),
+  ).toHaveAttribute('href', 'https://react-swipe-actions.nipesolutions.com/')
+  await expect(
+    page.getByRole('link', { name: 'React Spring Bottom Sheet' }),
+  ).toHaveAttribute(
+    'href',
+    'https://react-spring-bottom-sheet.nipesolutions.com/',
+  )
+
   const swipe = page.getByTestId('swipe-integration')
   await expect(swipe).toHaveAttribute('data-integration', 'swipe-actions')
   await expect(swipe.locator('.swipe-actions-root').first()).toBeVisible()
@@ -85,6 +95,32 @@ test('renders real sibling primitive integration proofs', async ({ page }) => {
   await expect(page.getByRole('dialog')).toBeVisible()
   await expect(page.getByTestId('sheet-ptr')).toBeVisible()
   await page.getByRole('button', { name: 'Close sheet proof' }).click()
+})
+
+test('sheet content keeps the native scroll direction available at its top boundary', async ({
+  page,
+}) => {
+  await page.goto('/#integrations')
+  await page.getByRole('button', { name: 'Open bottom sheet proof' }).click()
+
+  const root = page.getByTestId('sheet-ptr')
+  await expect(root).toHaveAttribute('data-at-top', 'true')
+  const touchAction = await root.evaluate(
+    (node) => window.getComputedStyle(node).touchAction,
+  )
+  expect(['pan-x pan-up', 'pan-x pan-y']).toContain(touchAction)
+
+  const scroll = page.locator('.sheet-scroll')
+  const dimensions = await scroll.evaluate((node) => ({
+    clientHeight: node.clientHeight,
+    scrollHeight: node.scrollHeight,
+  }))
+  expect(dimensions.scrollHeight).toBeGreaterThan(dimensions.clientHeight)
+  await scroll.hover()
+  await page.mouse.wheel(0, 180)
+  await expect
+    .poll(() => scroll.evaluate((node) => node.scrollTop))
+    .toBeGreaterThan(0)
 })
 
 test('Swipe Actions owns a horizontal row trace', async ({ page }) => {
