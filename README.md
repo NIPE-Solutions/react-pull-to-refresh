@@ -1,6 +1,6 @@
 # React Pull to Refresh
 
-Pull to refresh for React, without owning your data.
+Pull to refresh without owning your feed.
 
 A small, accessible pull-to-refresh primitive with scroll arbitration,
 resistance, and an async refresh lifecycle.
@@ -76,7 +76,8 @@ Available root variables:
 The root resolves an explicit scroll container or the nearest ancestor with
 scrollable vertical overflow, then falls back to the window. A one-pixel
 tolerance includes fractional and negative WebKit offsets. Movement must clearly
-favor downward intent; horizontal and upward movement are rejected.
+favor downward intent; horizontal and upward movement are rejected. Pointer
+capture begins only after intent is established and the boundary is rechecked.
 
 For page-level custom pull-to-refresh, browser-native refresh can still win.
 Choose document containment explicitly in your application when appropriate:

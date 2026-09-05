@@ -183,7 +183,6 @@ const Root = forwardRef<HTMLDivElement, PullToRefreshRootProps>(function Root(
       startX: event.clientX,
       startY: event.clientY,
     }
-    event.currentTarget.setPointerCapture(event.pointerId)
     setState('pending')
   }
 
@@ -200,6 +199,20 @@ const Root = forwardRef<HTMLDivElement, PullToRefreshRootProps>(function Root(
         sessionRef.current = null
         setState('idle')
         return
+      }
+      if (session.intent === 'pull') {
+        const root = rootRef.current
+        if (
+          !root ||
+          !isAtScrollStart(
+            getScrollTop(resolveScrollTarget(root, scrollContainer)),
+          )
+        ) {
+          sessionRef.current = null
+          setState('idle')
+          return
+        }
+        event.currentTarget.setPointerCapture(event.pointerId)
       }
     }
     if (session.intent !== 'pull') return

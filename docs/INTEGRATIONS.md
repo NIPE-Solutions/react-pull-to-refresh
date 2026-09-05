@@ -1,39 +1,53 @@
 # Integrations
 
+The documentation site runs these integrations with the published packages.
+They are development dependencies of the website only; Pull to Refresh keeps
+zero runtime dependencies beyond React peers.
+
 ## Swipe Actions
 
-Place swipeable rows inside PullToRefresh.Content. Pull-to-refresh waits through
-a small movement slop, then rejects horizontal or upward intent. This lets
-@nipe-solutions/react-swipe-actions own row gestures without a runtime
-dependency.
+Place swipeable rows inside `PullToRefresh.Content`. Pull to Refresh waits
+through its movement slop and rejects horizontal intent, leaving the row
+primitive free to claim the gesture.
 
 ```tsx
 <PullToRefresh.Root onRefresh={refresh}>
   <PullToRefresh.Content>
-    {items.map((item) => (
-      <SwipeActions.Root key={item.id}>{/* row actions */}</SwipeActions.Root>
-    ))}
+    <SwipeActions.Group>
+      {items.map((item) => (
+        <SwipeActions.Root key={item.id}>
+          <SwipeActions.Trailing>{/* actions */}</SwipeActions.Trailing>
+          <SwipeActions.Content>{/* row */}</SwipeActions.Content>
+        </SwipeActions.Root>
+      ))}
+    </SwipeActions.Group>
   </PullToRefresh.Content>
 </PullToRefresh.Root>
 ```
 
-Automated intent tests cover horizontal rejection. Combined physical-device
-testing remains in the manual matrix.
+Ownership is explicit:
+
+- horizontal intent → Swipe Actions;
+- ordinary vertical movement → scroll container;
+- downward intent at the top → Pull to Refresh.
 
 ## Spring Bottom Sheet
 
-Use the sheet’s actual scrolling element as the explicit owner:
+Keep the sheet handle outside the feed and pass the feed’s actual scrolling
+element explicitly:
 
 ```tsx
-<BottomSheet>
+<Sheet.Content>
+  <Sheet.Handle />
   <div ref={scrollRef} className="sheet-scroll">
     <PullToRefresh.Root onRefresh={refresh} scrollContainer={scrollRef}>
       <PullToRefresh.Content>{/* feed */}</PullToRefresh.Content>
     </PullToRefresh.Root>
   </div>
-</BottomSheet>
+</Sheet.Content>
 ```
 
-The sheet continues to own drag gestures outside its scrolling content. Exact
-ownership depends on sheet configuration, so the combined physical-device
-scenario is not claimed as verified in this alpha.
+The documentation proof uses the published v5 package. Desktop automation
+verifies that the sheet opens, exposes a dedicated scroll root, and closes.
+Combined drag feel on iOS and Android remains manual pending; the alpha does not
+claim physical-device verification.

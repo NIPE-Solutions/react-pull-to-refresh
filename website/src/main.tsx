@@ -1,135 +1,245 @@
 import '@fontsource-variable/instrument-sans'
 import '@fontsource/fraunces/600.css'
 import '@nipe-solutions/react-pull-to-refresh/core.css'
+import '@nipe-solutions/react-swipe-actions/core.css'
+import '@nipe-solutions/react-spring-bottom-sheet/core.css'
+import '@nipe-solutions/react-spring-bottom-sheet/theme.css'
 import './site.css'
 
-import { StrictMode, useCallback, useState } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { PullToRefresh } from '@nipe-solutions/react-pull-to-refresh'
+import {
+  BottomSheetProof,
+  GestureLab,
+  HeroDemo,
+  SwipeIntegration,
+} from './demos'
 import { LegalPage } from './legal-page'
 import { SiteFooter, SiteHeader } from './site-chrome'
 
-const initialMessages = [
-  {
-    sender: 'Mara Chen',
-    subject: 'Mobile navigation review',
-    preview: 'The gesture trace looks good on the compact viewport.',
-    time: '09:42',
-    color: '#217c86',
-  },
-  {
-    sender: 'Release checks',
-    subject: 'Package fixture passed',
-    preview: 'ESM, CommonJS, declarations, and CSS entrypoints verified.',
-    time: '08:17',
-    color: '#f06449',
-  },
-  {
-    sender: 'Owen Hart',
-    subject: 'Scroll ownership notes',
-    preview: 'The nested modal no longer claims upward movement.',
-    time: 'Yesterday',
-    color: '#9e6b3f',
-  },
-  {
-    sender: 'CI',
-    subject: 'Browser suite complete',
-    preview: 'Chromium, Firefox, and WebKit are reporting green.',
-    time: 'Yesterday',
-    color: '#496c52',
-  },
-]
-
-const code = `<PullToRefresh.Root onRefresh={refresh}>
+const quickStart = `<PullToRefresh.Root onRefresh={refresh}>
   <PullToRefresh.Indicator>
-    <Spinner />
+    <YourIndicator />
   </PullToRefresh.Indicator>
 
   <PullToRefresh.Content>
-    <Feed />
+    <YourContent />
   </PullToRefresh.Content>
 </PullToRefresh.Root>`
 
-function PullIndicator() {
+const accessibleRefresh = `const refresh = async () => {
+  await refetch()
+}
+
+<button onClick={refresh}>
+  Refresh
+</button>
+
+<PullToRefresh.Root onRefresh={refresh}>
+  ...
+</PullToRefresh.Root>`
+
+const browserCss = `html {
+  overscroll-behavior-y: contain;
+}`
+
+function OwnershipFlow() {
   return (
-    <div className="demo-indicator">
-      <svg viewBox="0 0 48 48" aria-hidden="true">
-        <circle cx="24" cy="24" r="20" />
-        <path d="M24 13v19m0 0 7-7m-7 7-7-7" />
-      </svg>
-      <span className="indicator-copy" />
-    </div>
+    <section
+      className="ownership section-shell"
+      id="behavior"
+      data-testid="ownership-flow"
+    >
+      <div className="section-heading">
+        <p className="section-index">01 / decide ownership</p>
+        <h2>Who owns the gesture?</h2>
+        <p>The primitive stays undecided until direction and boundary agree.</p>
+      </div>
+      <div className="ownership-flow">
+        <div>
+          <code>scrollTop &gt; 0</code>
+          <span>Scroll container</span>
+          <small>PTR does nothing</small>
+        </div>
+        <div>
+          <code>top + downward</code>
+          <span>Pull to Refresh</span>
+          <small>Claims after intent slop</small>
+        </div>
+        <div>
+          <code>horizontal intent</code>
+          <span>Sibling interaction</span>
+          <small>Swipe Actions can win</small>
+        </div>
+      </div>
+    </section>
   )
 }
 
-function Demo() {
-  const [messages, setMessages] = useState(initialMessages)
-  const [announcement, setAnnouncement] = useState('')
-
-  const refresh = useCallback(async () => {
-    setAnnouncement('Refreshing')
-    await new Promise((resolve) => window.setTimeout(resolve, 650))
-    const now = new Date().toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-    setMessages((current) => [
-      {
-        sender: 'New activity',
-        subject: 'Inbox refreshed',
-        preview: 'This item was added locally by the documentation demo.',
-        time: now,
-        color: '#f06449',
-      },
-      ...current,
-    ])
-    setAnnouncement('Refresh complete')
-  }, [])
-
+function BrowserBehavior() {
   return (
-    <div className="demo-shell" aria-label="Interactive pull-to-refresh demo">
-      <div className="demo-toolbar">
-        <span>Inbox</span>
-        <button type="button" onClick={() => void refresh()}>
-          Refresh
-        </button>
+    <section
+      className="browser-section"
+      id="browser-behavior"
+      data-testid="browser-native-ptr"
+    >
+      <div className="browser-copy">
+        <p className="section-index">04 / choose the scroll surface</p>
+        <h2>Browser-native pull-to-refresh</h2>
+        <p>
+          Element containers are the predictable default. Page-level use can
+          compete with the browser’s own refresh gesture, especially on Android
+          Chrome. The library never changes global document styles.
+        </p>
+        <pre>
+          <code>{browserCss}</code>
+        </pre>
+        <p className="browser-callout">
+          <strong>Opt in deliberately.</strong> Apply global overscroll
+          containment only when your application intends to replace
+          browser-native page refresh.
+        </p>
       </div>
-      <PullToRefresh.Root
-        className="demo-feed"
-        onRefresh={refresh}
-        data-testid="main-demo"
+      <div className="scroll-modes">
+        <article>
+          <span>Preferred</span>
+          <h3>Element container</h3>
+          <p>Contained boundary and local overscroll behavior.</p>
+        </article>
+        <article>
+          <span>Application decision</span>
+          <h3>Page / document</h3>
+          <p>May require global CSS to avoid native refresh conflict.</p>
+        </article>
+        <article>
+          <span>Arbitration required</span>
+          <h3>Nested interaction</h3>
+          <p>Pass the intended scroll owner when detection is ambiguous.</p>
+        </article>
+      </div>
+      <div className="browser-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Browser</th>
+              <th>Element container</th>
+              <th>Page level</th>
+              <th>Native conflict</th>
+              <th>Evidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Chromium</th>
+              <td>Automated</td>
+              <td>CSS opt-in</td>
+              <td>Android: yes</td>
+              <td>Desktop automated; mobile Manual pending</td>
+            </tr>
+            <tr>
+              <th>Firefox</th>
+              <td>Automated</td>
+              <td>Supported</td>
+              <td>Platform-dependent</td>
+              <td>Desktop automated; mobile Manual pending</td>
+            </tr>
+            <tr>
+              <th>Safari / WebKit</th>
+              <td>Automated</td>
+              <td>Elastic scroll caveats</td>
+              <td>iOS varies</td>
+              <td>WebKit automated; iOS Manual pending</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="platform-notes">
+        <p>
+          <strong>iOS Safari.</strong> Rubber-band scrolling may expose negative
+          offsets. The boundary tolerance accepts them, but page-level
+          suppression and nested behavior still require physical-device
+          validation.
+        </p>
+        <p>
+          <strong>Android Chrome.</strong> Browser-native refresh commonly owns
+          a downward page pull. Use an element container, or explicitly contain
+          document overscroll when replacing it.
+        </p>
+      </div>
+    </section>
+  )
+}
+
+function IntegrationProofs() {
+  return (
+    <section className="integrations section-shell" id="integrations">
+      <div className="section-heading">
+        <p className="section-index">03 / compose ownership</p>
+        <h2>Independent gestures can coexist.</h2>
+        <p>
+          These are the published packages running together—no shared
+          interaction runtime.
+        </p>
+      </div>
+      <div className="integration-grid">
+        <div>
+          <h3>Swipe Actions inside a feed</h3>
+          <p>
+            Horizontal motion reveals a row. Vertical motion stays with
+            scrolling. A downward pull at the top belongs to refresh.
+          </p>
+          <SwipeIntegration />
+        </div>
+        <div>
+          <h3>Pull to Refresh inside a sheet</h3>
+          <p>
+            The sheet handle remains outside the scrolling feed. The feed
+            element is passed explicitly as the pull boundary.
+          </p>
+          <BottomSheetProof />
+          <p className="integration-caveat">
+            Automated desktop evidence only. Combined physical-device testing
+            remains pending for this alpha.
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function IndicatorExamples() {
+  return (
+    <section className="indicator-section section-shell" id="indicator">
+      <div className="section-heading">
+        <p className="section-index">05 / bring the presentation</p>
+        <h2>Indicator is a slot, not a brand.</h2>
+        <p>
+          Mechanics arrive through CSS variables and one state attribute.
+          Presentation remains application code.
+        </p>
+      </div>
+      <div
+        className="indicator-strip"
+        aria-label="Indicator composition examples"
       >
-        <PullToRefresh.Indicator>
-          <PullIndicator />
-        </PullToRefresh.Indicator>
-        <PullToRefresh.Content>
-          <div className="demo-hint">Scroll to the top, then pull down</div>
-          {messages.map((message, index) => (
-            <article
-              className="message"
-              key={message.subject + '-' + String(index)}
-            >
-              <span
-                className="avatar"
-                style={{ backgroundColor: message.color }}
-                aria-hidden="true"
-              >
-                {message.sender.slice(0, 1)}
-              </span>
-              <span className="message-copy">
-                <strong>{message.sender}</strong>
-                <b>{message.subject}</b>
-                <span>{message.preview}</span>
-              </span>
-              <time>{message.time}</time>
-            </article>
-          ))}
-        </PullToRefresh.Content>
-      </PullToRefresh.Root>
-      <p className="sr-only" aria-live="polite">
-        {announcement}
-      </p>
-    </div>
+        <div>
+          <span className="indicator-arrow">↓</span>
+          <b>Arrow</b>
+        </div>
+        <div>
+          <span className="indicator-word">release</span>
+          <b>Text</b>
+        </div>
+        <div>
+          <span className="indicator-ring" />
+          <b>Progress ring</b>
+        </div>
+        <div>
+          <span className="indicator-mark">72</span>
+          <b>Custom mark</b>
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -137,134 +247,107 @@ function App() {
   return (
     <>
       <SiteHeader />
-
       <main id="top">
         <section className="hero">
           <div className="hero-copy">
-            <h1>Pull to refresh for React, without owning your data.</h1>
+            <div className="release-status">
+              <span>0.1 alpha</span>
+              <i />
+              Real-device QA pending
+            </div>
+            <h1>Pull to refresh without owning your feed.</h1>
             <p className="lede">
-              A focused primitive for scroll arbitration, progressive
-              resistance, threshold state, and one clean async refresh
-              lifecycle.
+              Scroll normally. Pull from the top. Release once armed. Your
+              refresh function owns the data.
             </p>
             <div className="install" aria-label="Installation command">
-              <code>npm install @nipe-solutions/react-pull-to-refresh</code>
-              <a href="#quick-start">Read the setup</a>
+              <code tabIndex={0}>
+                npm install @nipe-solutions/react-pull-to-refresh
+              </code>
+              <a href="#quick-start">Quick start</a>
             </div>
             <dl className="hero-facts">
+              <div>
+                <dt>Claim</dt>
+                <dd>Top + downward</dd>
+              </div>
+              <div>
+                <dt>Threshold</dt>
+                <dd>72 px</dd>
+              </div>
               <div>
                 <dt>Runtime</dt>
                 <dd>React only</dd>
               </div>
-              <div>
-                <dt>Motion</dt>
-                <dd>CSS variables</dd>
-              </div>
-              <div>
-                <dt>Data</dt>
-                <dd>Always yours</dd>
-              </div>
             </dl>
           </div>
           <div className="hero-demo">
-            <div className="waterline" aria-hidden="true">
-              <span>release</span>
-              <i />
+            <div className="pull-axis" aria-hidden="true">
               <span>pull</span>
+              <i />
+              <span>arm</span>
+              <i />
+              <span>settle</span>
             </div>
-            <Demo />
+            <HeroDemo />
           </div>
         </section>
 
-        <section className="ownership" id="behavior">
-          <div>
-            <h2>One gesture. Two clear owners.</h2>
-            <p>
-              The primitive owns the interaction mechanics. Your application
-              keeps every decision about data and presentation.
-            </p>
-          </div>
-          <div className="ownership-columns">
-            <div>
-              <h3>The library owns</h3>
-              <p>
-                Intent, top-boundary detection, resistance, threshold,
-                commitment, refreshing, and settling.
-              </p>
-            </div>
-            <div>
-              <h3>Your app owns</h3>
-              <p>
-                Fetching, cache invalidation, errors, retries, content, empty
-                states, and announcements.
-              </p>
-            </div>
-          </div>
-        </section>
+        <OwnershipFlow />
+        <GestureLab />
 
-        <section className="quick-start" id="quick-start">
+        <section className="quick-start section-shell" id="quick-start">
           <div className="section-heading">
-            <h2>Three parts, no framework.</h2>
+            <p className="section-index">The complete component model</p>
+            <h2>Three parts. Your data.</h2>
             <p>
-              Import the mechanical stylesheet once. Bring any indicator and any
-              content.
+              Import the mechanical stylesheet once. Bring any indicator and
+              arbitrary React content.
             </p>
           </div>
           <pre>
-            <code>{code}</code>
+            <code>{quickStart}</code>
           </pre>
         </section>
 
-        <section className="trace" aria-labelledby="trace-title">
-          <div>
-            <h2 id="trace-title">A predictable gesture trace</h2>
+        <IntegrationProofs />
+        <BrowserBehavior />
+        <IndicatorExamples />
+
+        <section
+          className="accessible-section section-shell"
+          id="accessibility"
+          data-testid="accessible-refresh"
+        >
+          <div className="section-heading">
+            <p className="section-index">06 / preserve equivalent access</p>
+            <h2>Gesture is an enhancement.</h2>
             <p>
-              Ordinary scrolling remains native. Pull-to-refresh only enters
-              after downward intent is clear at the top boundary.
+              Use the same application-owned function from a visible button.
+              Core injects no hidden control, live region, or focus behavior.
             </p>
           </div>
-          <ol>
-            <li>
-              <b>idle</b>
-              <span>Native scrolling owns the surface.</span>
-            </li>
-            <li>
-              <b>pulling</b>
-              <span>Visual distance follows with resistance.</span>
-            </li>
-            <li>
-              <b>armed</b>
-              <span>Release commits exactly one refresh.</span>
-            </li>
-            <li>
-              <b>refreshing</b>
-              <span>The returned promise owns the hold time.</span>
-            </li>
-            <li>
-              <b>settling</b>
-              <span>Content returns cleanly to zero.</span>
-            </li>
-          </ol>
+          <pre>
+            <code>{accessibleRefresh}</code>
+          </pre>
         </section>
 
-        <section className="docs-band" id="api">
+        <section className="docs-band section-shell" id="api">
           <div className="section-heading">
+            <p className="section-index">07 / public surface</p>
             <h2>Small by design.</h2>
-            <p>
-              The v1 surface exposes mechanics that change composition—not
-              internal physics knobs.
-            </p>
+            <p>Configuration changes composition—not internal physics.</p>
           </div>
-          <div className="api-table" role="table" aria-label="Public API">
-            <div role="row">
+          <div className="api-table" aria-label="Public API">
+            <div>
               <code>Root</code>
               <span>onRefresh, threshold, disabled, scrollContainer</span>
             </div>
-            <div role="row">
+            <div>
               <code>Indicator</code>
-              <span>Visual content positioned above the feed</span>
+              <span>Consumer-owned presentation above the content</span>
             </div>
-            <div role="row">
+            <div>
               <code>Content</code>
               <span>
                 Transform-isolated wrapper for arbitrary React content
@@ -272,45 +355,7 @@ function App() {
             </div>
           </div>
         </section>
-
-        <section className="notes">
-          <article>
-            <h2>Accessibility</h2>
-            <p>
-              A pull gesture must never be the only refresh path. Reuse your
-              refresh function from a visible button, and add status
-              announcements only when your product needs them. Core injects no
-              role, live region, or focus behavior.
-            </p>
-          </article>
-          <article>
-            <h2>Browser behavior</h2>
-            <p>
-              Element containers use local overscroll containment. For
-              document-level use, suppressing browser-native pull-to-refresh is
-              an application CSS decision. Safari rubber-banding differs from
-              Chromium and still requires real-device validation.
-            </p>
-          </article>
-          <article>
-            <h2>Integrations</h2>
-            <p>
-              Horizontal intent is rejected early so swipeable rows can win. In
-              bottom sheets, pass the sheet’s scrolling element explicitly and
-              keep sheet drag ownership outside the feed.
-            </p>
-          </article>
-          <article>
-            <h2>SSR and performance</h2>
-            <p>
-              Browser APIs are read only during interaction or effects.
-              Per-pixel motion updates CSS variables directly; React renders
-              semantic state transitions.
-            </p>
-          </article>
-        </section>
       </main>
-
       <SiteFooter />
     </>
   )
