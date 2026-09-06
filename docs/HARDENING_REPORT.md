@@ -1,7 +1,7 @@
 # Touch and scroll hardening report
 
-Date: 2026-09-06. Release classification: **ALPHA READY**. Website source and QA
-fixtures are updated locally; no deployment or package publication was performed.
+Date: 2026-09-06. Release classification: **ALPHA READY**. This report records the initial
+hardening snapshot. Release follow-up results are recorded below.
 
 ## 1. Original bugs reproduced
 
@@ -184,3 +184,16 @@ and automated regressions are implemented. Beta remains blocked on meaningful
 physical iOS/Android evidence, the supported mobile device matrix, and a normal
 three-engine run on a current supported environment. No release version or tag
 was changed.
+
+## Release follow-up
+
+The current GitHub Actions three-engine run passed on Ubuntu with Playwright
+1.63: **94 passed, 8 intentionally skipped Chromium-only cases**, closing the
+local frozen-WebKit environment gap. [CI evidence](https://github.com/NIPE-Solutions/react-pull-to-refresh/actions/runs/34019360937).
+
+Desktop feedback also reproduced a website integration issue: short demo
+content did not overflow, so auto resolution correctly used Window and refused
+pulls after the page scrolled. Hero, Gesture Lab default and Swipe Actions
+demos now explicitly select their local surface. Three added browser
+regressions cover this scenario. The lab retains automatic mode with an
+explanation of short-content behavior. Physical-device QA remains pending.

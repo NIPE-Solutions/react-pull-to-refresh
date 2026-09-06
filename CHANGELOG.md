@@ -8,6 +8,8 @@ All notable changes follow Keep a Changelog.
 
 ### Fixed
 
+- Keep short website demos local with explicit scroll owners, including when the page is scrolled.
+
 - Correct directional touch-action to pan-down and preserve pinch zoom.
 - Add session-scoped touch compatibility handling with shared gesture mechanics.
 - Ignore bubbled child capture loss when capture transfers to Root.

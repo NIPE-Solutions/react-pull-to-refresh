@@ -141,6 +141,7 @@ export function HeroDemo() {
         </div>
         <PullToRefresh.Root
           ref={rootRef}
+          scrollContainer={rootRef}
           className="demo-feed"
           onRefresh={refresh}
           data-testid="main-demo"
@@ -168,7 +169,7 @@ type RefreshResult = 'resolve' | 'reject' | 'slow'
 
 export function GestureLab() {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const [boundary, setBoundary] = useState('automatic')
+  const [boundary, setBoundary] = useState('explicit')
   const [result, setResult] = useState<RefreshResult>('resolve')
   const [content, setContent] = useState('short')
   const [motion, setMotion] = useState('system')
@@ -208,6 +209,9 @@ export function GestureLab() {
         <p>
           Change one constraint, then pull the real primitive. Failure settles
           through the same lifecycle as success.
+          {boundary === 'automatic' &&
+            content === 'short' &&
+            ' Short content does not scroll, so automatic detection uses the page boundary. Choose Explicit element ref to keep this demo local, or Long content to test automatic detection.'}
         </p>
       </div>
       <div className="lab-panel">
@@ -295,6 +299,7 @@ export function GestureLab() {
 const integrationRows = ['Release notes', 'Gesture audit', 'Browser matrix']
 
 export function SwipeIntegration() {
+  const scrollRef = useRef<HTMLDivElement>(null)
   const [message, setMessage] = useState('Pull vertically or swipe a row')
   return (
     <div
@@ -307,6 +312,8 @@ export function SwipeIntegration() {
         <output>{message}</output>
       </div>
       <PullToRefresh.Root
+        ref={scrollRef}
+        scrollContainer={scrollRef}
         className="integration-scroll"
         onRefresh={async () => {
           setMessage('Refreshing feed')

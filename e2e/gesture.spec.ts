@@ -308,3 +308,31 @@ test('horizontal and below-threshold traces do not refresh', async ({
   await page.mouse.up()
   await expect(root.getByText('Inbox refreshed')).toHaveCount(0)
 })
+
+for (const selector of [
+  '[data-testid=main-demo]',
+  '[data-testid=lab-root]',
+  '.integration-scroll',
+]) {
+  test(`short desktop demo ${selector} refreshes independently of page scroll`, async ({
+    page,
+  }) => {
+    await page.goto('/')
+    const root = page.locator(selector)
+    await root.scrollIntoViewIfNeeded()
+    if (await page.evaluate(() => scrollY === 0))
+      await page.evaluate(() => scrollTo(0, 100))
+    await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(0)
+    const box = await root.boundingBox()
+    if (!box) throw Error('Demo missing')
+    const x = box.x + box.width / 2,
+      y = box.y + 80
+    await page.mouse.move(x, y)
+    await page.mouse.down()
+    await page.mouse.move(x, y + 95, { steps: 10 })
+    await expect(root).toHaveAttribute('data-state', 'armed')
+    await page.mouse.up()
+    await expect(root).toHaveAttribute('data-state', 'refreshing')
+    await expect(root).toHaveAttribute('data-state', 'idle')
+  })
+}
