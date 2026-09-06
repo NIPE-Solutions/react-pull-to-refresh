@@ -158,6 +158,11 @@ describe('PullToRefresh', () => {
     const onRefresh = vi.fn()
     renderFixture(onRefresh)
     const root = screen.getByTestId('root')
+    root.style.overflowY = 'auto'
+    Object.defineProperties(root, {
+      scrollHeight: { value: 400 },
+      clientHeight: { value: 100 },
+    })
     let scrollTop = 0
     Object.defineProperty(root, 'scrollTop', {
       configurable: true,
@@ -202,6 +207,11 @@ describe('PullToRefresh', () => {
     const onRefresh = vi.fn()
     renderFixture(onRefresh)
     const root = screen.getByTestId('root')
+    root.style.overflowY = 'auto'
+    Object.defineProperties(root, {
+      scrollHeight: { value: 400 },
+      clientHeight: { value: 100 },
+    })
     Object.defineProperty(root, 'scrollTop', { configurable: true, value: 40 })
 
     pull(100)
@@ -211,7 +221,7 @@ describe('PullToRefresh', () => {
     expect(root).toHaveAttribute('data-state', 'idle')
   })
 
-  it('ignores a second non-primary pointer', () => {
+  it('abandons a session on a second non-primary pointer', () => {
     const onRefresh = vi.fn()
     renderFixture(onRefresh)
     const root = screen.getByTestId('root')
@@ -242,7 +252,7 @@ describe('PullToRefresh', () => {
     fireEvent.pointerUp(root, { pointerId: 2 })
 
     expect(onRefresh).not.toHaveBeenCalled()
-    expect(root).toHaveAttribute('data-state', 'pending')
+    expect(root).toHaveAttribute('data-state', 'idle')
   })
 
   it('cancels an uncommitted pointer without refreshing', () => {

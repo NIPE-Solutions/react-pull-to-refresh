@@ -1,5 +1,8 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
+import { watchConsole } from './console'
+
+test.beforeEach(({ page }) => watchConsole(page))
 
 test('page is accessible and has no horizontal overflow', async ({ page }) => {
   await page.goto('/')
@@ -108,7 +111,7 @@ test('sheet content keeps the native scroll direction available at its top bound
   const touchAction = await root.evaluate(
     (node) => window.getComputedStyle(node).touchAction,
   )
-  expect(['pan-x pan-up', 'pan-x pan-y']).toContain(touchAction)
+  expect(['pan-x pan-down pinch-zoom', 'auto']).toContain(touchAction)
 
   const scroll = page.locator('.sheet-scroll')
   const dimensions = await scroll.evaluate((node) => ({

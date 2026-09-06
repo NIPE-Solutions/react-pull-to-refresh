@@ -87,17 +87,21 @@ function BrowserBehavior() {
         <p className="section-index">04 / choose the scroll surface</p>
         <h2>Browser-native pull-to-refresh</h2>
         <p>
-          Element containers are the predictable default. Page-level use can
-          compete with the browser’s own refresh gesture, especially on Android
-          Chrome. The library never changes global document styles.
+          Pull-to-refresh is partly a browser-gesture problem. Element-scoped
+          interactions are more controllable than page-level native overscroll,
+          especially on iOS Safari. The application owns its scroll-container
+          CSS.
         </p>
         <pre>
           <code>{browserCss}</code>
         </pre>
         <p className="browser-callout">
-          <strong>Opt in deliberately.</strong> Apply global overscroll
-          containment only when your application intends to replace
-          browser-native page refresh.
+          <strong>Chromium page recipe.</strong> Apply containment to the actual
+          scroller when replacing native refresh. This does not guarantee native
+          PTR suppression on iOS Safari.{' '}
+          <a href="https://github.com/NIPE-Solutions/react-pull-to-refresh/blob/main/docs/BROWSER_BEHAVIOR.md">
+            Browser Behavior
+          </a>
         </p>
       </div>
       <div className="scroll-modes">
@@ -121,44 +125,52 @@ function BrowserBehavior() {
         <table>
           <thead>
             <tr>
-              <th>Browser</th>
-              <th>Element container</th>
-              <th>Page level</th>
-              <th>Native conflict</th>
-              <th>Evidence</th>
+              <th>Environment</th>
+              <th>Logic / E2E</th>
+              <th>Real touch</th>
+              <th>Native PTR conflict</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th>Chromium</th>
-              <td>Automated</td>
-              <td>CSS opt-in</td>
-              <td>Android: yes</td>
-              <td>Desktop automated; mobile Manual pending</td>
-            </tr>
-            <tr>
-              <th>Firefox</th>
-              <td>Automated</td>
-              <td>Supported</td>
-              <td>Platform-dependent</td>
-              <td>Desktop automated; mobile Manual pending</td>
-            </tr>
-            <tr>
-              <th>Safari / WebKit</th>
-              <td>Automated</td>
-              <td>Elastic scroll caveats</td>
-              <td>iOS varies</td>
-              <td>WebKit automated; iOS Manual pending</td>
-            </tr>
+            {[
+              [
+                'Chromium desktop',
+                'Automated + CDP input',
+                'Mobile not implied',
+                'Desktop n/a',
+              ],
+              [
+                'Android Chrome',
+                'Engine coverage',
+                'Manual pending',
+                'Test page refresh',
+              ],
+              ['Firefox desktop', 'Automated', 'n/a', 'Desktop n/a'],
+              ['Firefox Android', 'Engine coverage', 'Manual pending', 'Test'],
+              ['WebKit desktop', 'Automated', 'n/a', 'Desktop n/a'],
+              [
+                'iOS / iPadOS Safari',
+                'WebKit evidence only',
+                'Manual pending',
+                'Native conflict',
+              ],
+            ].map(([environment, logic, touch, conflict]) => (
+              <tr key={environment}>
+                <th>{environment}</th>
+                <td>{logic}</td>
+                <td>{touch}</td>
+                <td>{conflict}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
       <div className="platform-notes">
         <p>
-          <strong>iOS Safari.</strong> Rubber-band scrolling may expose negative
-          offsets. The boundary tolerance accepts them, but page-level
-          suppression and nested behavior still require physical-device
-          validation.
+          <strong>iOS Safari.</strong> Page-level custom Pull to Refresh on iOS
+          Safari is not a guaranteed configuration. Safari may retain native
+          browser Pull-to-Refresh ownership. Physical iOS and Android QA is
+          required before beta.
         </p>
         <p>
           <strong>Android Chrome.</strong> Browser-native refresh commonly owns
@@ -266,6 +278,10 @@ function App() {
               Real-device QA pending
             </div>
             <h1>Pull to refresh without owning your feed.</h1>
+            <p>
+              Mobile pull-to-refresh depends on browser gesture ownership.{' '}
+              <a href="#browser-behavior">Browser Behavior</a>
+            </p>
             <p className="lede">
               Scroll normally. Pull from the top. Release once armed. Your
               refresh function owns the data.

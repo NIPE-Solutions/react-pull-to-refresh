@@ -43,6 +43,7 @@ export function getArmedState(
   threshold: number,
 ): boolean {
   return wasArmed
-    ? distance >= Math.max(0, threshold - HYSTERESIS)
+    ? distance >=
+        Math.max(0, threshold - Math.min(HYSTERESIS, threshold * 0.25))
     : distance >= threshold
 }

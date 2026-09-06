@@ -1,11 +1,11 @@
 {
   "name": "@nipe-solutions/react-pull-to-refresh",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "description": "Accessible, native-feeling pull-to-refresh for React.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NIPE-Solutions/react-pull-to-refresh"
+    "url": "git+https://github.com/NIPE-Solutions/react-pull-to-refresh.git"
   },
   "homepage": "https://react-pull-to-refresh.nipesolutions.com",
   "bugs": {

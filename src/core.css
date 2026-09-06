@@ -4,13 +4,13 @@
   --ptr-overshoot: 0px;
   --ptr-threshold: 72px;
   position: relative;
-  overflow: hidden;
-  overscroll-behavior-y: contain;
-  touch-action: pan-x pan-y;
+  touch-action: auto;
 }
 
-.ptr-root[data-at-top='true'] {
-  touch-action: pan-x pan-up;
+.ptr-root[data-at-top='true']:not([data-disabled]):not(
+    [data-state='refreshing']
+  ) {
+  touch-action: pan-x pan-down pinch-zoom;
 }
 
 .ptr-indicator {

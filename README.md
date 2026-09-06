@@ -5,6 +5,9 @@ Pull to refresh without owning your feed.
 A small, accessible pull-to-refresh primitive with scroll arbitration,
 resistance, and an async refresh lifecycle.
 
+Mobile pull-to-refresh depends on browser gesture ownership. See
+[Browser Behavior](docs/BROWSER_BEHAVIOR.md).
+
 ```bash
 npm install @nipe-solutions/react-pull-to-refresh
 ```
@@ -73,22 +76,16 @@ Available root variables:
 
 ## Scroll ownership
 
-The root resolves an explicit scroll container or the nearest ancestor with
-scrollable vertical overflow, then falls back to the window. A one-pixel
-tolerance includes fractional and negative WebKit offsets. Movement must clearly
-favor downward intent; horizontal and upward movement are rejected. Pointer
-capture begins only after intent is established and the boundary is rechecked.
+The root resolves an explicit owner or the nearest actually scrollable ancestor,
+then Window. It checks nested scrollers from the gesture origin and rechecks the
+boundary before claim. An explicit null ref stays unresolved until a subsequent
+gesture. Gestures starting below the top stay browser-owned for that stream.
 
-For page-level custom pull-to-refresh, browser-native refresh can still win.
-Choose document containment explicitly in your application when appropriate:
-
-```css
-html {
-  overscroll-behavior-y: contain;
-}
-```
-
-The library never modifies html or body styles.
+Core CSS does not set root overflow or overscroll policy. Apply optional
+`overscroll-behavior-y: contain` to your actual scroller. Chromium page-level
+containment may help suppress native refresh; it is not a universal guarantee.
+Page-level custom Pull to Refresh on iOS Safari is not a guaranteed configuration.
+Safari may retain native browser Pull-to-Refresh ownership.
 
 ## Accessibility
 
@@ -99,11 +96,10 @@ keyboard gesture, or focus movement.
 
 ## Browser notes
 
-- Chromium supports element overscroll containment and Pointer Events.
-- Firefox uses the same mechanics but presents overscroll differently.
-- Safari can report negative offsets while rubber-banding; real-device
-  validation remains required.
-- Desktop primary-button dragging exists for demos and tests.
+Directional-capable browsers use Pointer Events with `pan-x pan-down pinch-zoom`.
+Firefox/Safari use a session-scoped Touch Events compatibility adapter. Automated
+engine tests do not verify physical iOS or Android behavior. Mobile QA remains
+beta-blocking; use an application refresh button as the accessible alternative.
 
 See [browser behavior](docs/BROWSER_BEHAVIOR.md),
 [integrations](docs/INTEGRATIONS.md), and
@@ -125,7 +121,7 @@ npm run test:e2e
 Requires Node 24. React 18.3 and React 19 are peer-supported. Runtime
 dependencies are limited to React peers.
 
-Current status: 0.1.0-alpha.0. Automated checks do not replace the manual device
+Current status: 0.1.0-alpha.1. Automated checks do not replace the manual device
 matrix.
 
 Part of [NIPE Open Source](https://opensource.nipesolutions.com).
