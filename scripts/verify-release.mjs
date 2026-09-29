@@ -276,7 +276,7 @@ export async function verifyRelease({ dryRun = false, outputDirectory } = {}) {
     release.version,
   )
   assertRegistryVersionAbsent(publishedVersion, release.version)
-  console.log(`Registry version is available: ${release.version}`)
+  console.log(`Registry version is unpublished: ${release.version}`)
   console.log('Release dry-run verification passed; nothing was published')
 }
 

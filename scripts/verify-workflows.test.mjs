@@ -34,6 +34,31 @@ test('stable release metadata returns the latest channel', () => {
   })
 })
 
+test('repository metadata satisfies the stable release policy', async () => {
+  const packageJson = JSON.parse(
+    await readFile(path.join(repositoryRoot, 'package.json'), 'utf8'),
+  )
+  const changelog = await readFile(
+    path.join(repositoryRoot, 'CHANGELOG.md'),
+    'utf8',
+  )
+
+  assert.deepEqual(validateReleaseMetadata(packageJson, changelog), {
+    name: stablePackage.name,
+    version: '1.0.0',
+    channel: 'latest',
+  })
+})
+
+test('normal quality gate includes workflow policy without release access', async () => {
+  const packageJson = JSON.parse(
+    await readFile(path.join(repositoryRoot, 'package.json'), 'utf8'),
+  )
+
+  assert.match(packageJson.scripts.check, /npm run test:workflows/)
+  assert.doesNotMatch(packageJson.scripts.check, /release:check/)
+})
+
 test('stable metadata rejects invalid versions and incomplete release records', () => {
   for (const version of ['1.0.0-alpha.1', '1.0.0+build.1', '01.0.0', '1.0']) {
     assert.throws(

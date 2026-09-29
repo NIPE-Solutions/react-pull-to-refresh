@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFile } from 'node:child_process'
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
@@ -9,6 +9,20 @@ import test from 'node:test'
 
 const execFileAsync = promisify(execFile)
 const repositoryRoot = path.resolve(import.meta.dirname, '../..')
+
+test('package metadata exposes the stable release identity', async () => {
+  const packageJson = JSON.parse(
+    await readFile(path.join(repositoryRoot, 'package.json'), 'utf8'),
+  )
+  const changelog = await readFile(
+    path.join(repositoryRoot, 'CHANGELOG.md'),
+    'utf8',
+  )
+
+  assert.equal(packageJson.version, '1.0.0')
+  assert.equal(packageJson.publishConfig.tag, 'latest')
+  assert.match(changelog, /^## \[1\.0\.0\] - 2026-09-29$/m)
+})
 
 test('packed file allowlist rejects an unexpected dist file', async () => {
   const unexpectedFile = path.join(repositoryRoot, 'dist/unexpected.tmp')

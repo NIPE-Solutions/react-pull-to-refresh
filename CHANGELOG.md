@@ -4,6 +4,18 @@ All notable changes follow Keep a Changelog.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-09-29
+
+### Added
+
+- Verify packed ESM, CommonJS, TypeScript, CSS, and server-rendering contracts in isolated React 18 and React 19 consumers.
+- Publish through a protected workflow that checks the exact tarball and SHA-512 manifest before npm provenance publishing.
+
+### Changed
+
+- Promote the established compound API and gesture lifecycle to the stable release channel.
+- Run release policy checks alongside the existing unit, API, size, package, website, and three-engine browser suites.
+
 ## [0.1.0-alpha.1] - 2026-09-06
 
 ### Fixed
