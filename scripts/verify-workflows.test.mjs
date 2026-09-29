@@ -229,6 +229,7 @@ test('release workflow validator rejects weakened trust boundaries', async () =>
   const workflow = await readWorkflow('.github/workflows/release.yml')
   const mutations = [
     (copy) => (copy.on.release.types = ['created']),
+    (copy) => delete copy.jobs.verify.if,
     (copy) => (copy.permissions = { 'id-token': 'write' }),
     (copy) => (copy.concurrency.group = 'release-${{ github.ref }}'),
     (copy) => (copy.jobs.publish.environment = 'unprotected'),
@@ -359,6 +360,7 @@ function validateReleaseWorkflow(workflow) {
   const publish = workflow.jobs.publish
   assert.ok(verify)
   assert.ok(publish)
+  assert.equal(verify.if, 'github.event.release.prerelease == false')
   assert.equal(verify['runs-on'], 'ubuntu-24.04')
   assert.ok(verify['timeout-minutes'] <= 60)
   assert.deepEqual(verify.outputs, {

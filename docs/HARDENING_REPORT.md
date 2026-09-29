@@ -197,7 +197,7 @@ content did not overflow, so auto resolution correctly used Window and refused
 pulls after the page scrolled. Hero, Gesture Lab default and Swipe Actions
 demos now explicitly select their local surface. Three added browser
 regressions cover this scenario. The lab retains automatic mode with an
-explanation of short-content behavior. Physical-device QA remains not run.
+explanation of short-content behavior. Physical-device QA was not run.
 
 ## Stable release follow-up — 2026-09-29
 
