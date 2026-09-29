@@ -139,19 +139,14 @@ function BrowserBehavior() {
                 'Mobile not implied',
                 'Desktop n/a',
               ],
-              [
-                'Android Chrome',
-                'Engine coverage',
-                'Manual pending',
-                'Test page refresh',
-              ],
+              ['Android Chrome', 'Engine coverage', 'Not run', 'Not run'],
               ['Firefox desktop', 'Automated', 'n/a', 'Desktop n/a'],
-              ['Firefox Android', 'Engine coverage', 'Manual pending', 'Test'],
+              ['Firefox Android', 'Engine coverage', 'Not run', 'Not run'],
               ['WebKit desktop', 'Automated', 'n/a', 'Desktop n/a'],
               [
                 'iOS / iPadOS Safari',
                 'WebKit evidence only',
-                'Manual pending',
+                'Not run',
                 'Native conflict',
               ],
             ].map(([environment, logic, touch, conflict]) => (
@@ -169,8 +164,8 @@ function BrowserBehavior() {
         <p>
           <strong>iOS Safari.</strong> Page-level custom Pull to Refresh on iOS
           Safari is not a guaranteed configuration. Safari may retain native
-          browser Pull-to-Refresh ownership. Physical iOS and Android QA is
-          required before beta.
+          browser Pull-to-Refresh ownership. Physical iOS and Android QA was not
+          run for 1.0.0.
         </p>
         <p>
           <strong>Android Chrome.</strong> Browser-native refresh commonly owns
@@ -220,8 +215,8 @@ function IntegrationProofs() {
           </p>
           <BottomSheetProof />
           <p className="integration-caveat">
-            Automated desktop evidence only. Combined physical-device testing
-            remains pending for this alpha.
+            Automated desktop evidence only. Combined physical-device behavior
+            was not tested for 1.0.0.
           </p>
         </div>
       </div>
@@ -273,9 +268,9 @@ function App() {
         <section className="hero">
           <div className="hero-copy">
             <div className="release-status">
-              <span>0.1 alpha</span>
+              <span>1.0 stable</span>
               <i />
-              Real-device QA pending
+              Automated engine coverage
             </div>
             <h1>Pull to refresh without owning your feed.</h1>
             <p>
@@ -351,6 +346,8 @@ function App() {
             <p>
               Use the same application-owned function from a visible button.
               Core injects no hidden control, live region, or focus behavior.
+              Automated keyboard and axe checks passed; a human screen-reader
+              session was not run for 1.0.0.
             </p>
           </div>
           <pre>

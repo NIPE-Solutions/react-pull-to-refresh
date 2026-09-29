@@ -51,9 +51,9 @@ element explicitly:
 </Sheet.Content>
 ```
 
-Make the root itself scrollable. Do not place a default PTR root—with its
-mechanical overflow containment—inside a second element that is expected to
-receive chained scrolling.
+Make the root itself scrollable. Avoid placing it inside a competing scroll
+surface when the root is expected to receive the gesture; pass the intended
+owner explicitly when the layout is ambiguous.
 
 Stop pointer-down propagation from the feed when the sheet handle is the only
 surface that should drag the sheet. This leaves the browser default untouched,
@@ -62,5 +62,5 @@ from racing to capture the same downward gesture at the top boundary.
 
 The documentation proof uses the published v5 package. Desktop automation
 verifies that the sheet opens, scrolls the dedicated root, and closes.
-Combined drag feel on iOS and Android remains manual pending; the alpha does not
-claim physical-device verification.
+Combined drag behavior was not tested on physical iOS or Android devices for
+1.0.0; desktop automation is not presented as physical-device verification.

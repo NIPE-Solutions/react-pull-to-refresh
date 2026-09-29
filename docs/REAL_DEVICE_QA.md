@@ -1,15 +1,16 @@
-# Real-device QA — beta gate
+# Real-device QA checklist
 
-**No physical-device QA was performed by this automated hardening pass.**
-Status is ALPHA READY only after automated checks; BETA READY requires recorded
-physical iOS + Android results, including the supported device matrix below.
+**No physical-device or human screen-reader QA was performed for 1.0.0.** The
+stable release evidence is automated and does not turn desktop engine coverage
+into a physical mobile claim. Use this checklist to add reproducible manual
+evidence or diagnose a device-specific report.
 
 | Device and browser | Status                                                                  |
 | ------------------ | ----------------------------------------------------------------------- |
-| iPhone Safari      | Manual pending — beta blocking                                          |
-| Android Chrome     | Manual pending — beta blocking                                          |
-| Firefox Android    | Manual pending — beta blocking for supported mobile policy              |
-| iPad Safari        | Manual pending — beta blocking                                          |
+| iPhone Safari      | Not run                                                                 |
+| Android Chrome     | Not run                                                                 |
+| Firefox Android    | Not run                                                                 |
+| iPad Safari        | Not run                                                                 |
 | Desktop Chromium   | Automated browser mechanics + trusted CDP touch                         |
 | Desktop Firefox    | Automated browser mechanics + synthetic adapter events                  |
 | Desktop WebKit     | Automated browser mechanics + synthetic adapter events; see runner note |
@@ -35,7 +36,7 @@ large-list and 1000-idle-instance modes. Query options:
 The button is application-owned and intentionally does not command the PTR
 state machine. Use an actual drag to test PTR promise/hold/settling state.
 
-## Required on each mobile device, separately for page and element
+## Manual scenarios for each mobile device
 
 - Finger down at top: custom pull, threshold arms, release calls once.
 - Finger up at top: content scrolls down normally.
@@ -76,16 +77,17 @@ verified or add early/global cancellation to make the checklist green.
 **Page-level custom Pull to Refresh on iOS Safari is not a guaranteed
 configuration. Safari may retain native browser Pull-to-Refresh ownership.**
 
-## Automated runner note
+## Automated runner history
 
-The local macOS 14 environment has a frozen WebKit binary. Installed Playwright
-1.63 fails before page creation (`Unknown setting: PushAPIEnabled`). An isolated
-Playwright 1.58.2 runner can execute the same tests against the compatible local
-WebKit. This does not change repository dependencies and is older-engine evidence.
-Run the normal three-engine suite on a current supported CI OS before beta.
+During the original hardening pass, the local macOS 14 WebKit binary was frozen:
+Playwright 1.63 failed before page creation (`Unknown setting:
+PushAPIEnabled`). An isolated Playwright 1.58.2 runner supplied older-engine
+evidence without changing repository dependencies. The current GitHub Actions
+suite runs Chromium, Firefox, and WebKit on Ubuntu; all remain desktop-engine
+evidence rather than physical-device results.
 
 ## Result template
 
-| Commit | Device / OS / browser | Date / tester | Surface / scenario | Expected | Actual | Evidence | Status         |
-| ------ | --------------------- | ------------- | ------------------ | -------- | ------ | -------- | -------------- |
-| —      | —                     | —             | —                  | —        | —      | —        | Manual pending |
+| Commit | Device / OS / browser | Date / tester | Surface / scenario | Expected | Actual | Evidence | Status  |
+| ------ | --------------------- | ------------- | ------------------ | -------- | ------ | -------- | ------- |
+| —      | —                     | —             | —                  | —        | —      | —        | Not run |

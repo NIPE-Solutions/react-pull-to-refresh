@@ -61,7 +61,8 @@ UI and telemetry ownership.
   Safari/Firefox mobile fallback and actual browser chrome interactions.
 
 Directly invoking React handlers or `page.mouse` cannot establish mobile touch
-support. Beta requires meaningful physical iOS and Android evidence.
+support. The 1.0 release has no physical iOS/Android or human screen-reader
+evidence; those remain separate manual validation activities.
 
 Native listeners route through handlers published at React commit, so owner and
 refresh callback changes are observed without resubscribing active sessions.

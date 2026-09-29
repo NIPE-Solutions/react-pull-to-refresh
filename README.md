@@ -98,8 +98,10 @@ keyboard gesture, or focus movement.
 
 Directional-capable browsers use Pointer Events with `pan-x pan-down pinch-zoom`.
 Firefox/Safari use a session-scoped Touch Events compatibility adapter. Automated
-engine tests do not verify physical iOS or Android behavior. Mobile QA remains
-beta-blocking; use an application refresh button as the accessible alternative.
+Chromium, Firefox, and WebKit tests cover mechanics, keyboard use, and axe rules.
+They do not verify physical iOS or Android behavior. No physical-device or human
+screen-reader session was performed for 1.0.0. Always provide an application
+refresh button as the accessible alternative.
 
 See [browser behavior](docs/BROWSER_BEHAVIOR.md),
 [integrations](docs/INTEGRATIONS.md), and
@@ -121,8 +123,8 @@ npm run test:e2e
 Requires Node 24. React 18.3 and React 19 are peer-supported. Runtime
 dependencies are limited to React peers.
 
-Current status: 0.1.0-alpha.1. Automated checks do not replace the manual device
-matrix.
+Current status: 1.0.0 stable. Automated checks do not replace the documented
+manual device and assistive-technology matrix.
 
 Part of [NIPE Open Source](https://opensource.nipesolutions.com).
 

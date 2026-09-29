@@ -1,7 +1,7 @@
 # Touch and scroll hardening report
 
-Date: 2026-09-06. Release classification: **ALPHA READY**. This report records the initial
-hardening snapshot. Release follow-up results are recorded below.
+Date: 2026-09-06. This report records the initial prerelease hardening snapshot.
+Stable release follow-up results are recorded below.
 
 ## 1. Original bugs reproduced
 
@@ -53,7 +53,8 @@ alone prevents default. Touchmove is non-passive only on Root during a candidate
 Cancellation, additional touches, abandonment, blur, disable and unmount clean up.
 Compatibility pointer events do not create a second touch session. Forced
 fallback passes trusted Chromium input with auto CSS; synthetic DOM integration
-passes Firefox/WebKit. Physical mobile fallback reliability is still pending.
+passes Firefox/WebKit. Physical mobile fallback reliability was not established
+by a device run.
 
 ## 5. Root overflow/overscroll changes
 
@@ -134,12 +135,12 @@ The application still owns data, errors, UI meaning and its accessible button.
 
 The compatible WebKit runner was installed outside the repository, with the
 same final E2E files copied into it. No dependency/lockfile downgrade was made.
-A current supported CI OS must rerun the normal three-engine command before beta.
+The later GitHub Actions run recorded below closed this local runner gap.
 
-## 14. Real-device QA completed/pending
+## 14. Real-device QA status
 
 None completed in this pass. iPhone Safari, iPad Safari, Android Chrome and
-Firefox Android are **manual pending**. [QA](REAL_DEVICE_QA.md) now includes
+Firefox Android were **not run**. [QA](REAL_DEVICE_QA.md) includes
 separate page/element matrices, directional/fallback checks, editing/selection,
 zoom, nested scrollers, native PTR conflicts, and a result-recording template.
 The noindex `/qa/` website entry provides actual test surfaces.
@@ -174,16 +175,16 @@ containers may govern CSS touch-action before Root; browser-owned/uncancelable
 streams remain untouched. Pre-contact CSS can be stale after purely imperative
 layout/ref changes without render. Ignoring an origin in JS does not override
 ancestor CSS policy. Root's content transform still affects fixed/absolute
-positioning. The local current-runner WebKit environment needs a supported OS.
-Website changes are local source changes; deployment was not performed.
+positioning. Automated desktop-engine coverage does not remove the need to
+reproduce device-specific reports on the affected hardware. Website deployment
+is outside this report.
 
-## 19. Release-readiness classification
+## 19. Historical release classification
 
-**ALPHA READY**, not BETA READY or STABLE READY. The cross-browser input strategy
-and automated regressions are implemented. Beta remains blocked on meaningful
-physical iOS/Android evidence, the supported mobile device matrix, and a normal
-three-engine run on a current supported environment. No release version or tag
-was changed.
+This 2026-09-06 snapshot did not promote the package. The cross-browser input
+strategy and automated regressions were implemented, while physical iOS/Android
+evidence and a current three-engine CI run were still absent. No release version
+or tag was changed during that pass.
 
 ## Release follow-up
 
@@ -196,4 +197,17 @@ content did not overflow, so auto resolution correctly used Window and refused
 pulls after the page scrolled. Hero, Gesture Lab default and Swipe Actions
 demos now explicitly select their local surface. Three added browser
 regressions cover this scenario. The lab retains automatic mode with an
-explanation of short-content behavior. Physical-device QA remains pending.
+explanation of short-content behavior. Physical-device QA was not run.
+
+## Stable release follow-up — 2026-09-29
+
+The 1.0.0 candidate retains the established public API and gesture mechanics.
+The current automated evidence is 71 unit tests plus 103 passing browser tests
+across Chromium, Firefox, and WebKit, with 8 explicitly skipped trusted-touch
+cases that are Chromium-only. Packed-package checks cover separate React 18 and
+React 19 consumers, and the release path verifies the exact tarball before
+protected npm provenance publishing.
+
+No physical iOS/Android or human screen-reader session was performed for 1.0.0.
+Stable promotion is based on the automated evidence above and the documented
+limitations; it does not relabel unperformed manual checks as passed.

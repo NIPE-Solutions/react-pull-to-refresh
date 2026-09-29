@@ -1,6 +1,6 @@
 # ADR 0001: browser-aware input ownership
 
-Status: implemented; mobile physical validation pending (2026-09-06).
+Status: implemented; mobile physical validation not run for 1.0.0.
 
 The old `pan-x pan-up` rule allowed the wrong native direction. Pointer Events
 Level 3 explicitly uses `pan-x pan-down` for a top-boundary PTR example. The
@@ -27,7 +27,8 @@ Compatibility data reports all four directional values (`pan-up`, `pan-down`,
 `pan-left`, `pan-right`) in Chromium since 55, but not Firefox or Safari/WebKit.
 `CSS.supports` accurately distinguishes the tested engines' accepted syntax;
 it cannot certify native mobile gesture behavior. Native iOS page refresh is
-not guaranteed suppressible. The fallback must pass physical QA before beta.
+not guaranteed suppressible. Physical QA is required before claiming verified
+support for a specific mobile browser and device combination.
 
 Sources checked 2026-09-06:
 

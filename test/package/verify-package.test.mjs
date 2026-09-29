@@ -1,83 +1,83 @@
 import assert from 'node:assert/strict'
 import { execFile } from 'node:child_process'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import path from 'node:path'
+import process from 'node:process'
 import { promisify } from 'node:util'
 import test from 'node:test'
-import { createRequire } from 'node:module'
 
 const execFileAsync = promisify(execFile)
+const repositoryRoot = path.resolve(import.meta.dirname, '../..')
 
-test('packed package exposes import, require, types, CSS, and SSR', async () => {
-  const workspace = await mkdtemp(join(tmpdir(), 'react-ptr-package-'))
+test('package metadata exposes the stable release identity', async () => {
+  const packageJson = JSON.parse(
+    await readFile(path.join(repositoryRoot, 'package.json'), 'utf8'),
+  )
+  const changelog = await readFile(
+    path.join(repositoryRoot, 'CHANGELOG.md'),
+    'utf8',
+  )
+
+  assert.equal(packageJson.version, '1.0.0')
+  assert.equal(packageJson.publishConfig.tag, 'latest')
+  assert.match(changelog, /^## \[1\.0\.0\] - 2026-09-29$/m)
+})
+
+test('packed file allowlist rejects an unexpected dist file', async () => {
+  const unexpectedFile = path.join(repositoryRoot, 'dist/unexpected.tmp')
+
   try {
-    const { stdout } = await execFileAsync(
-      'npm',
-      ['pack', '--json', '--pack-destination', workspace],
-      { cwd: new URL('../..', import.meta.url) },
+    await writeFile(unexpectedFile, 'must not ship\n')
+    await assert.rejects(
+      execFileAsync(process.execPath, ['scripts/verify-package.mjs'], {
+        cwd: repositoryRoot,
+        maxBuffer: 10 * 1024 * 1024,
+      }),
+      (error) => {
+        assert.match(
+          error.stderr,
+          /Unexpected packed files: dist\/unexpected\.tmp/,
+        )
+        return true
+      },
     )
-    const [{ filename, files }] = JSON.parse(stdout)
-    const names = files.map((file) => file.path)
-    for (const required of [
-      'dist/index.js',
-      'dist/index.cjs',
-      'dist/index.d.ts',
-      'dist/core.css',
-      'dist/theme.css',
-      'package.json',
-    ]) {
-      assert.ok(names.includes(required), 'tarball is missing ' + required)
-    }
-
-    await execFileAsync('npm', ['init', '--yes'], { cwd: workspace })
-    await execFileAsync(
-      'npm',
-      [
-        'install',
-        '--ignore-scripts',
-        join(workspace, filename),
-        'react@19',
-        'react-dom@19',
-      ],
-      { cwd: workspace },
-    )
-    const packageDir = join(
-      workspace,
-      'node_modules',
-      '@nipe-solutions',
-      'react-pull-to-refresh',
-    )
-    const imported = await import(join(packageDir, 'dist/index.js'))
-    const require = createRequire(import.meta.url)
-    const required = require(join(packageDir, 'dist/index.cjs'))
-    assert.ok(imported.PullToRefresh.Root)
-    assert.ok(required.PullToRefresh.Root)
-
-    const declarations = await readFile(
-      join(packageDir, 'dist/index.d.ts'),
-      'utf8',
-    )
-    assert.match(declarations, /PullToRefreshRootProps/)
-
-    const React = await import(join(workspace, 'node_modules/react/index.js'))
-    const { renderToString } = await import(
-      join(workspace, 'node_modules/react-dom/server.node.js')
-    )
-    const html = renderToString(
-      React.createElement(
-        imported.PullToRefresh.Root,
-        { onRefresh() {} },
-        React.createElement(
-          imported.PullToRefresh.Content,
-          null,
-          'SSR content',
-        ),
-      ),
-    )
-    assert.match(html, /data-state="idle"/)
-    assert.match(html, /SSR content/)
   } finally {
-    await rm(workspace, { recursive: true, force: true })
+    await rm(unexpectedFile, { force: true })
+  }
+})
+
+test('packed package passes isolated React 18 and React 19 consumers', async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'react-ptr-policy-'))
+  const userConfig = path.join(directory, 'npmrc')
+
+  try {
+    await writeFile(userConfig, 'allow-scripts=@example/unrelated-tool\n')
+    const { stdout, stderr } = await execFileAsync(
+      process.execPath,
+      ['scripts/verify-package.mjs'],
+      {
+        cwd: repositoryRoot,
+        env: {
+          ...process.env,
+          NPM_CONFIG_USERCONFIG: userConfig,
+          npm_config_allow_scripts: '@example/unrelated-tool',
+        },
+        maxBuffer: 10 * 1024 * 1024,
+      },
+    )
+
+    assert.equal(stderr, '')
+    assert.match(
+      stdout,
+      /React 18(?:\.\d+){2}: ESM, CJS, types, CSS, SSR passed/,
+    )
+    assert.match(
+      stdout,
+      /React 19(?:\.\d+){2}: ESM, CJS, types, CSS, SSR passed/,
+    )
+    assert.match(stdout, /Packed package verification passed/)
+  } finally {
+    await rm(directory, { recursive: true, force: true })
   }
 })
