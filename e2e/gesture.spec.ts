@@ -19,12 +19,10 @@ test('page is accessible and has no horizontal overflow', async ({ page }) => {
   expect(sizes.scroll).toBe(sizes.client)
 })
 
-test('hero exposes prerelease status and live pull mechanics', async ({
-  page,
-}) => {
+test('hero exposes stable status and live pull mechanics', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page.getByText('0.1 alpha', { exact: true })).toBeVisible()
+  await expect(page.getByText('1.0 stable', { exact: true })).toBeVisible()
   const root = page.getByTestId('main-demo')
   const metrics = page.getByTestId('hero-metrics')
   await expect(metrics.getByText('72 px', { exact: true })).toBeVisible()
@@ -74,7 +72,7 @@ test('documents ownership, native refresh, and truthful device status', async ({
   await expect(
     browser.getByText('overscroll-behavior-y: contain;'),
   ).toBeVisible()
-  await expect(browser.getByText(/Manual pending/).first()).toBeVisible()
+  await expect(browser.getByText(/Not run/).first()).toBeVisible()
 })
 
 test('renders real sibling primitive integration proofs', async ({ page }) => {

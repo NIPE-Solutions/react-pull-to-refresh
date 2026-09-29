@@ -11,13 +11,14 @@ configuration. Safari may retain native browser Pull-to-Refresh ownership.**
 | Environment          | Logic / E2E                         | Real touch                  | Native PTR conflict         |
 | -------------------- | ----------------------------------- | --------------------------- | --------------------------- |
 | Chromium desktop     | Automated + trusted CDP touch input | Physical mobile not implied | Desktop n/a                 |
-| Android Chrome       | Chromium engine coverage            | Manual required             | Test page refresh           |
+| Android Chrome       | Chromium engine coverage            | Not run                     | Not run                     |
 | Firefox desktop      | Automated DOM and mouse traces      | n/a                         | Desktop n/a                 |
-| Firefox Android      | Firefox engine coverage             | Manual required             | Test                        |
+| Firefox Android      | Firefox engine coverage             | Not run                     | Not run                     |
 | WebKit desktop       | Automated DOM and mouse traces      | n/a                         | Desktop n/a                 |
-| iPhone / iPad Safari | WebKit evidence only                | Manual required             | Native page refresh may win |
+| iPhone / iPad Safari | WebKit evidence only                | Not run                     | Native page refresh may win |
 
-See [real-device QA](REAL_DEVICE_QA.md) for actual run status and beta gates.
+See [real-device QA](REAL_DEVICE_QA.md) for actual run status and the manual
+evidence checklist.
 `page.mouse` validates state mechanics, not mobile touch arbitration. Synthetic
 DOM Touch Events validate adapter cancellation and cleanup; they do not start
 native scrolling. Chromium CDP input exercises the browser's touch pipeline,
@@ -124,8 +125,8 @@ commits; mouse/pen still use Pointer Events.
 
 Touch cancellation on the first relevant move is a compatibility strategy, not
 proof that every Safari/Firefox mobile configuration will surrender its stream.
-Real-device validation remains beta-blocking. No retry of a browser-owned stream
-and no early `preventDefault()` are used.
+Physical-device validation was not run for 1.0.0. No retry of a browser-owned
+stream and no early `preventDefault()` are used.
 
 ## Composition limits and troubleshooting
 
