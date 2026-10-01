@@ -420,6 +420,61 @@ footer a {
   font-size: 0.68rem;
 }
 
+.support-cta {
+  display: flex;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 48px 32px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 32px;
+  border-bottom: 1px solid var(--line);
+}
+
+.support-cta__copy {
+  flex: 1 1 480px;
+  min-width: 0;
+}
+
+.support-cta h2 {
+  font-size: clamp(1.85rem, 3vw, 2.5rem);
+}
+
+.support-cta p {
+  max-width: 64ch;
+  margin: 14px 0 0;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.support-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.support-cta__actions a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.support-cta__actions .support-cta__primary {
+  border-color: var(--ink);
+  color: var(--tension);
+  background: var(--ink);
+}
+
+.support-cta__actions a:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+
 .section-shell {
   max-width: 1320px;
   margin: 0 auto;
@@ -952,6 +1007,10 @@ footer {
 }
 
 @media (max-width: 760px) {
+  .support-cta {
+    padding: 32px 22px;
+  }
+
   .section-shell,
   .browser-section {
     padding: 82px 22px;

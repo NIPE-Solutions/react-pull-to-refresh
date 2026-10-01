@@ -314,6 +314,27 @@ function App() {
           </div>
         </section>
 
+        <section className="support-cta" aria-labelledby="support-heading">
+          <div className="support-cta__copy">
+            <h2 id="support-heading">Useful in your project?</h2>
+            <p>
+              If React Pull to Refresh helps you build, a GitHub star supports
+              the project and helps others discover it.
+            </p>
+          </div>
+          <div className="support-cta__actions">
+            <a
+              className="support-cta__primary"
+              href="https://github.com/NIPE-Solutions/react-pull-to-refresh"
+            >
+              Star on GitHub
+            </a>
+            <a href="https://opensource.nipesolutions.com">
+              Explore NIPE Open Source
+            </a>
+          </div>
+        </section>
+
         <OwnershipFlow />
         <GestureLab />
 
